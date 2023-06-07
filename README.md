@@ -59,4 +59,4 @@ def predicate(r):
 
 ## TODO
 
-- Add the headers and User Agent in possible entrypoints
+- Add on PyPI
