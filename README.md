@@ -2,7 +2,7 @@
 
 ## Description
 
-SightQL is a Python library which allows to exploit an SQL Injection using multiple entrypoints such as classical GET/POST parameters and cookies.
+SightQL is a Python library which allows to exploit an SQL Injection using multiple entrypoints such as classical GET/POST parameters, cookies, header and user agent.
 
 ## Installation
 

@@ -2,7 +2,10 @@ import requests
 import json
 import string
 import time
+import urllib3
 from pwn import log
+
+urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 
 class SightQLException(Exception):
     
@@ -71,7 +74,8 @@ class SightQL:
                 self.target, 
                 params=data, 
                 cookies=cookies, 
-                headers=headers
+                headers=headers,
+                verify=False
             )
     
     def post_fetch(self, data, cookies={}, headers={}) -> requests.models.Response:
@@ -80,7 +84,8 @@ class SightQL:
                 data=data, 
                 cookies=cookies, 
                 headers=headers, 
-                json=json.dumps(data) if self.json_mode else {}
+                json=json.dumps(data) if self.json_mode else {},
+                verify=False
             )
     
     def format_dict_data(self, data:dict, char:str):
